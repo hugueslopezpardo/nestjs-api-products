@@ -1,0 +1,31 @@
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - nestjs-api-products-network
+
+  nestjs-app:
+    container_name: nestjs-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    environment:
+      - NODE_ENV=development
+      - MONGO_URI=mongodb://mongodb:27017/nestjs-api-products
+    depends_on:
+      - mongodb
+    networks:
+      - nestjs-api-products-network
+
+volumes:
+  mongodb_data:
+
+networks:
+  nestjs-api-products-network:
